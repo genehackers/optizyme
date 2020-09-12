@@ -1,6 +1,6 @@
-Package: enzymeopt
+Package: optizyme
 Type: Package
-Title: Optimization and simulation of pathway
+Title: Optizyme
 Version: 0.1.0
 Author: Michelle Awh
 Maintainer: Michelle Awh <mawh@uchicago.edu>
