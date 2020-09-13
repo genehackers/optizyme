@@ -3,5 +3,5 @@ test_that("multiplication works", {
 })
 
 test_that('MCGD example has length 6',{
-  expect_vector(example_optimization()size=6)
+  expect_vector(example_optimization(),size=6)
 })
