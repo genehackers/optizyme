@@ -5,5 +5,6 @@
 #'@return dot product to be used to generate basis vectors
 
 DotProduct<-function(x1,x2){
-  return(sum(x1*x2))
+  Answer<-x1*x2
+  return(sum(Answer))
 }

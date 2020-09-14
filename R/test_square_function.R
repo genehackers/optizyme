@@ -5,7 +5,7 @@
 #' @return x^2
 #' @export
 
-test_function <- function(x){
+test_square_function <- function(x){
   print(x^2)
 }
 
