@@ -19,7 +19,8 @@
 #' @param GDNumberOfSteps number of steps taken
 #' @return SolutionVector
 
-MCGD<-function(NumberOfEnzymes,TotalEnzyme,NumberOfRuns,ThresholdGuess,GDPrecision,GDNumberOfSteps){
+#Before MCGD can be used, a function named OFFunction that defines the model and outputs what the algorithm will optimize with respect to must be run.
+MCGD<-function(NumberOfEnzymes,TotalEnzyme,NumberOfRuns,ThresholdGuess,GDPrecision,GDNumberOfSteps,GDdtCutoff){
   TotalEnzyme<-TotalEnzyme
   Threshold<-OFFunction(ThresholdGuess)
   AcceptableStarts<-0
@@ -58,7 +59,7 @@ MCGD<-function(NumberOfEnzymes,TotalEnzyme,NumberOfRuns,ThresholdGuess,GDPrecisi
   i<-0
   repeat{
     i<-i+1
-    Object<-GradientDescent(NumberOfEnzymes,StartMatrix[1:NumberOfEnzymes,i],GDNumberOfSteps,GDPrecision)
+    Object<-GradientDescent(NumberOfEnzymes,StartMatrix[1:NumberOfEnzymes,i],GDNumberOfSteps,GDPrecision,GDdtCutoff)
     for (a in 1:(NumberOfEnzymes+1)) {
       SearchMatrix[a,i]<-Object[a]
     }
@@ -72,4 +73,3 @@ MCGD<-function(NumberOfEnzymes,TotalEnzyme,NumberOfRuns,ThresholdGuess,GDPrecisi
   }
   return(SolutionVector)
 }
-
