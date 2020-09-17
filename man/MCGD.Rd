@@ -10,7 +10,8 @@ MCGD(
   NumberOfRuns,
   ThresholdGuess,
   GDPrecision,
-  GDNumberOfSteps
+  GDNumberOfSteps,
+  GDdtCutoff
 )
 }
 \arguments{
