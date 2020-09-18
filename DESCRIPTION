@@ -1,7 +1,7 @@
 Package: optizyme
 Type: Package
 Title: Optizyme
-Version: 0.1.0
+Version: 1.1.0
 Author: Michelle Awh
 Maintainer: Michelle Awh <mawh@uchicago.edu>
 Description: Optizyme uses a Gradient Descent algorithm to search for the optimal enzyme ratios for linear chain, cell-free pathways that conform to Michaelis Menten kinetics. Users should load a simulation of their pathway into their WD as "OFFunction" and provide kinetic constants in a matrix, vector, or csv file named "constants". This package includes a file of test values labeled "constants.csv".
