@@ -79,5 +79,3 @@ GradientDescent<-function(NumberOfEnzymes,InitialGuess,NumberOfSteps,GDdtMultipl
   }
   return(GDMatrix[1:(NumberOfEnzymes+1),NumberOfSteps])
 }
-StartingVector<-c(2,1.5,5.7,9.8,3.6)
-GradientDescent(5,StartingVector,25,.1,.001)
