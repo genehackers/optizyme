@@ -63,5 +63,5 @@ EnzymeModelTimeCourse(
 TimeCourseMatrix
 }
 \description{
-A function that retrieves time course data for a cell-free system to provide for more visualisation optiona
+This function outputs the time course for each species as a row in the matrix. The InitialState vector is extended for n entries in each row based on the time step and dt chosen.
 }

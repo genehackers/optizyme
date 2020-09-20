@@ -63,5 +63,5 @@ EnzymeModelPlot(
 a plot of the time course of the system
 }
 \description{
-This function provides visualization of the time course for a cell-free system
+This function generates the graph for the time-course of the cell free system.
 }

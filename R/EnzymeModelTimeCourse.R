@@ -1,6 +1,6 @@
 #' EnzymeModelTimeCourse
 #'
-#' A function that retrieves time course data for a cell-free system to provide for more visualisation optiona
+#' This function outputs the time course for each species as a row in the matrix. The InitialState vector is extended for n entries in each row based on the time step and dt chosen.
 #'
 #' @param NumberOfEnzymes is a scalar value equal to the number of enzymes in the system
 #' @param InitialState is a vector containing the initial concentrations of each fo the species involved in the system. The last entry in InitialState should be a zero, and won't represent any species in the system. This last entry being zero is used for indexing purposes by the function.

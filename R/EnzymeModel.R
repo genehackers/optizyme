@@ -1,6 +1,6 @@
 #' EnzymeModel
 #'
-#' Function that constructs a model for the optimization of enzyme ratios
+#' This function outputs the terminal concentration of the species that is supposed to be optimized. It multiplies the terminal concentration because our algorithm is a minimization, so maximizing yield corresponds to minimizing yield*-1.
 #'
 #' @param NumberOfEnzymes is a scalar value equal to the number of enzymes in the system
 #' @param InitialState is a vector containing the initial concentrations of each fo the species involved in the system. The last entry in InitialState should be a zero, and won't represent any species in the system. This last entry being zero is used for indexing purposes by the function.

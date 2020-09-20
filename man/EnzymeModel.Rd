@@ -63,5 +63,5 @@ EnzymeModel(
 Model
 }
 \description{
-Function that constructs a model for the optimization of enzyme ratios
+This function outputs the terminal concentration of the species that is supposed to be optimized. It multiplies the terminal concentration because our algorithm is a minimization, so maximizing yield corresponds to minimizing yield*-1.
 }
