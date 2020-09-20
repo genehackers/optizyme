@@ -4,7 +4,13 @@
 \alias{GradientDescent}
 \title{Gradient Descent Script}
 \usage{
-GradientDescent(NumberOfEnzymes, InitialGuess, NumberOfSteps, GDdtMultiple)
+GradientDescent(
+  NumberOfEnzymes,
+  InitialGuess,
+  NumberOfSteps,
+  GDdtMultiple,
+  GDdtCutoff
+)
 }
 \arguments{
 \item{NumberOfEnzymes}{the integer number of enzymes used in the pathway}
