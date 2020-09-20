@@ -21,7 +21,31 @@ This document will serve as a tutorial to using the capabilities of Optizyme. Be
 
 The functions included are:
 
-1. EnzymeModelPlot: Visualization of the time course for a cell-free system 
-2. EnzymeModelTimeCourse: Ability to retrieve time course data for more flexible visualization
-3. EnzymeModel: Construction of model for optimization of enzyme ratios
-4. MCGD: Optimization of enzyme ratios 
+1. **MCGD**: Optimization of enzyme ratios
+2. **EnzymeModel**: Construction of a model for use with MCGD
+3. **EnzymeModelPlot**: Visualization of the time course for a cell-free system
+4. **EnzymeModelTimeCourse**: Ability to retrieve time course data for a more flexible visualization
+
+**MCGD** stands for Monte Carlo Gradient Descent and is the optimization algorithm that is the heart of Optizyme's functionality. MCGD can be used to optimize enzyme ratios for a cell-free biological system. The output from MCGD is the optimized enzyme ratios and then the last value in the output vector is -1 times the concentration of the compound of interest at the end of the model time. MCGD takes a few inputs: NumberOfEnzymes, TotalEnzyme, NumberOfRuns, ThresholdGuess, GDPrecision, GDNumberOfSteps, and GDdtCutoff. These inputs will be explained below, but first we will provide an explanation of how a gradient descent algorithm works. 
+
+The simplest way to explain this algorithm is with an analogy. Imagine walking over a a very foggy landscape, so foggy that you cannot see past where you are standing. This landscape has a lot of hills and dips, and you are trying to find the lowest point of the landscape. The only tool available to you is a compass, but instead of telling you which way is north, this compass points in the direction of greatest decrease in altitude. So if you were standing on the side of a hill, the compass would point straight down the hill.  To move around, you look at the compass, and then you take a step in the direction it is pointing. You then look again, and take a step in the new direction it is pointing. At some point, you should reach the lowest point on the landscape. Our gradient descent algorithm uses this idea to find the most efficient ratio of enzymes. The foggy landscape in the analogy is a function of different enzyme ratios. Each place you step is a different vector of enzyme ratios, and each altitude is a turnover rate, so you're looking for the spot where the altitude is lowest / the turnover rate is fastest. 
+
+Now imagine that you find yourself in a ditch. The compass would lead you to the center of the ditch, at which you would be at the lowest point near you, so the compass would have nowhere lower to point. But what if there is an even lower ditch somewhere else? How do we find that lower point if the compass can't understand that even if this is the lowest point in the near vicinity, there might be a lower point somewhere else? To get around this, we use multiple explorers in this landscape. That way, if one of them gets stuck in a ditch, there are still others who can find a better solution. Each explorer can start in a different part of the landscape so their compasses will take them on different paths, finding different low points. We hope that one of the explorers will find the global lowest altitude on the landscape, although this is not guaranteed.
+
+The inputs for MCGD are as follows:
+
+**NumberOfEnzymes** is the number of enzymes in the pathway being optimized. For example, a linear chain system of reactions with five substrates and a unique enzyme catalyzing each reaction from one substrate to the next would have four enzymes.
+
+**TotalEnzyme** is the total concentration of enzyme the optimization algorithm has to work with. This constraint is important because if the algorithm had unlimited enzyme to work with, it could find a solution that is efficient but not practical due to an unreasonably high amount of enzyme. This concentration should take into account what concentrations of enzyme are feasible for the intended use of your pathway.
+
+**NumberOfRuns** is the number of runs the algorithm will take. More runs can produce a better answer but will take longer.
+
+**ThresholdGuess** is a vector that represents the initial guess for enzyme ratios. This list of values does not need to be very accurate; it serves only to keep the algorithm from wasting time computational power searching through awful enzyme ratio guesses. Using a simple 1:1 ratio as ThresholdGuess is perfectly fine. The vector you input for Threshold Guess should be the same length as the number of enzymes. For example, a four enzyme system could have an initial guess of c(1,1,1,1).
+
+**GDPrecision** is short for Gradient Descent Precision and is the step size the algorithm takes. If the algorithm takes very small steps towards a solution, it will be able to find a more accurate answer, but it will also take longer, since more steps will be needed. Generally, 0.25 is an appropriate value for GDPrecision.
+
+**GDNumberOfSteps** is the number of steps the algorithm will take each run it does. The more steps taken, the longer it will take the algorithm to do each run.
+
+**GDCutoff** determines what level of accuracy is desired. If the algorithm starts adjusting values below this step of accuracy, it will terminate to avoid additional computation cost. If the total enzyme is 22.6 ug/ml, and an accuracy of .226 ug/ml is desired, then the GDCutoff value should be .01, or 1%.
+
+
