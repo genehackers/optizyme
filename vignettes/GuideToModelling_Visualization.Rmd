@@ -2,7 +2,7 @@
 title: "Guide to Modelling and Visualization Functions"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{GuideToOptizyme}
+  %\VignetteIndexEntry{Guide to Modelling and Visualization Functions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
