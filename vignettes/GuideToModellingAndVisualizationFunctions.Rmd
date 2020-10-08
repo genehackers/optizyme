@@ -1,8 +1,8 @@
 ---
-title: "Guide to Modelling and Visualization Functions"
+title: "GuideToModellingAndVisualizationFunctions"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{GuideToOptizyme}
+  %\VignetteIndexEntry{GuideToModellingAndVisualizationFunctions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -117,7 +117,6 @@ EnzymeNonCompetitiveInhibitionConstants<-cbind(E1NC,E2NC,E3NC,E4NC,E5NC,E6NC)
 
 Now that the inputs for EnzymeModelPlot have been defined, the function can be called like so:
 
-```{r}
 EnzymeModelPlot(6,InitialState,63.07,.01,EnzymeNumberOfSubstrates,EnzymeSubstrates,EnzymeProducts,EnzymeConcentrations,EnzymeTurnoverRates,EnzymeMichaelisConstants,EnzymeS1CompetitiveInhibitors,EnzymeS1CompetitiveInhibitionConstants,EnzymeS2CompetitiveInhibitors,EnzymeS2CompetitiveInhibitionConstants,EnzymeNonCompetitiveInhibitors,EnzymeNonCompetitiveInhibitionConstants,6)
-```
+
 

@@ -1,5 +1,5 @@
 ---
-title: "Guide To Optizyme"
+title: "GuideToOptizyme"
 author: "Michelle Awh"
 output: rmarkdown::html_vignette
 vignette: >

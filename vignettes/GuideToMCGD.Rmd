@@ -1,8 +1,8 @@
 ---
-title: "Guide to MCGD"
+title: "GuideToMCGD"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{GuideToOptizyme}
+  %\VignetteIndexEntry{GuideToMCGD}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
