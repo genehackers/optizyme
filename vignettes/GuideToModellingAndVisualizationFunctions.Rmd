@@ -14,7 +14,33 @@ knitr::opts_chunk$set(
 )
 ```
 
-The functions **EnzymeModel**, **EnzymeModelPlot**, and **EnzymeModelTimeCourse** all take the same inputs and differ in their outputs. Their inputs will be described below, and then the use of each function will be detailed after. 
+Vignette Contents:
+
+• List/Explanation of Modelling and Visualization functions available in Optizyme <br />
+• List/Explanation of inputs to these functions<br />
+• Explanation of Model System<br />
+• Demonstration of how to define the inputs to the functions in a way that is easily checked for errors<br />
+• Example call for each function<br />
+
+##
+
+## The Functions
+
+The functions **EnzymeModel**, **EnzymeModelPlot**, and **EnzymeModelTimeCourse** all take the same inputs and differ in their outputs. 
+
+**EnzymeModel** outputs the terminal concentration of the species that is supposed to be optimized.
+
+**EnzymeModelPlot** generates the graph for the time-course of the cell free system.
+
+**EnzymeModelTimeCourse** outputs the time course for each species as a row in the matrix.
+
+EnzymeModel can be used as the optimization function for MCGD, and the GuideToMCGD vignette explains how to do that.
+
+##
+
+## Inputs
+
+Their inputs will be described below, and then the use of each function will be detailed after. 
 
 **NumberOfEnzymes** is a scalar value that should be equal to the number of enzymes in the system. 
 
@@ -47,15 +73,17 @@ are also matrices of size 10xn. They should be filled in the same manner as the 
 
 ##
 
+## Model System
+
 In order to best demonstrate the workflow involved in using the Modelling and Visualization capabilities of Optizyme, an example system will be used, and the inputs used for the modelling and visualization of that system will be explained.
 
 The system used in this example is the cell-free system described in the following paper: [A combined experimental and modelling approach for the Weimberg pathway optimisation](https://www.nature.com/articles/s41467-020-14830-y)
 
 ##
 
-# EnzymeModelPlot
+## Code to Define the Inputs
 
-Here is some code that defines the inputs needed to use EnzymeModelPlot. Note that many of the inputs to EnzymeModelPlot are not directly entered into the function call itself. Instead, they are defined as separate variables (for example, InitialState), and the names of those variables will be entered into the function call. The function would work just as well if the vectors were entered directly into the functin call, but doing it this way helps to check for errors.
+Here is some code that defines the inputs needed to use these functions. Note that many of the inputs are not directly entered into the function call itself. Instead, they are defined as separate variables (for example, InitialState), and the names of those variables will be entered into the function call. The function would work just as well if the vectors were entered directly into the functin call, but doing it this way helps to check for errors.
 
 Another thing to note here is that instead of turnover rate and concentration, the entries to EnzymeTurnoverRates and EnzymeConcentrations are specific activies in U/mg and then concentrations in mg/ml. Within this specific model, there are two reactions that Optizyme does not represent exactly like the model in the paper. There is a spontaneous conversion of compound 2 to compound 3 whose rate equation doesn't follow the structure of enzyme kinetic differential equations, and so it is left out of the model. Furthermore, the NAD+ recycling mechamism described in the paper is approximated as an enzyme reaction, but is not represented perfectly.
 
@@ -114,9 +142,61 @@ E5NC<-c(9,9,9,9,9,9,9,9,9,9)
 E6NC<-c(9,9,9,9,9,9,9,9,9,9)
 EnzymeNonCompetitiveInhibitionConstants<-cbind(E1NC,E2NC,E3NC,E4NC,E5NC,E6NC)
 ```
+ ##
+ 
+ Now that the inputs have been defined, we will show examples of using these inputs to call these three functions.
+ 
+ ##
 
-Now that the inputs for EnzymeModelPlot have been defined, the function can be called like so:
+# EnzymeModel
+
+EnzymeModel outputs the terminal concentration of the species that is supposed to be optimized. It multiplies the terminal concentration because our algorithm is a minimization, so maximizing yield corresponds to minimizing yield*-1.
+
+EnzymeModel(6,InitialState,63.07,.01,EnzymeNumberOfSubstrates,EnzymeSubstrates,EnzymeProducts,EnzymeConcentrations,EnzymeTurnoverRates,EnzymeMichaelisConstants,EnzymeS1CompetitiveInhibitors,EnzymeS1CompetitiveInhibitionConstants,EnzymeS2CompetitiveInhibitors,EnzymeS2CompetitiveInhibitionConstants,EnzymeNonCompetitiveInhibitors,EnzymeNonCompetitiveInhibitionConstants,6)
+
+##
+
+# EnzymeModelPlot
+
+EnzymeModelPlot generates the graph for the time-course of the cell free system.
 
 EnzymeModelPlot(6,InitialState,63.07,.01,EnzymeNumberOfSubstrates,EnzymeSubstrates,EnzymeProducts,EnzymeConcentrations,EnzymeTurnoverRates,EnzymeMichaelisConstants,EnzymeS1CompetitiveInhibitors,EnzymeS1CompetitiveInhibitionConstants,EnzymeS2CompetitiveInhibitors,EnzymeS2CompetitiveInhibitionConstants,EnzymeNonCompetitiveInhibitors,EnzymeNonCompetitiveInhibitionConstants,6)
+
+##
+
+# EnzymeModelTimeCourse
+
+EnzymeModelTimeCourse outputs the time course for each species as a row in a matrix. This function can be useful since it allows one to view the data in a different way than with EnzymeModelPlot. 
+
+In order to correctly format the output of EnzymeModelPLot, the InitialState vector must be extended for n entries in each row based on the Time and dt chosen. Below is some code that does that:
+
+Time<-63.07
+dt<-.01
+NumberOfSteps<-Time/dt
+
+Integers<-(1:(NumberOfSteps))
+Time<-dt*Integers
+rainbow<-rainbow(length(TimeCourseMatrix[,1]))
+
+Once the inputs have been defined, the function can be called:
+
+EnzymeModelTimeCourse(6,InitialState,63.07,.01,EnzymeNumberOfSubstrates,EnzymeSubstrates,EnzymeProducts,EnzymeConcentrations,EnzymeTurnoverRates,EnzymeMichaelisConstants,EnzymeS1CompetitiveInhibitors,EnzymeS1CompetitiveInhibitionConstants,EnzymeS2CompetitiveInhibitors,EnzymeS2CompetitiveInhibitionConstants,EnzymeNonCompetitiveInhibitors,EnzymeNonCompetitiveInhibitionConstants,6)
+
+If you want to plot the output of EnzymeModelTimeCourse, you can do it by defining a variable to be equal to the output of EnzymeModelTimeCourse, like so:
+
+TimeCourseMatrix<-EnzymeModelTimeCourse(6,InitialState,63.07,.01,EnzymeNumberOfSubstrates,EnzymeSubstrates,EnzymeProducts,EnzymeConcentrations,EnzymeTurnoverRates,EnzymeMichaelisConstants,EnzymeS1CompetitiveInhibitors,EnzymeS1CompetitiveInhibitionConstants,EnzymeS2CompetitiveInhibitors,EnzymeS2CompetitiveInhibitionConstants,EnzymeNonCompetitiveInhibitors,EnzymeNonCompetitiveInhibitionConstants,6)
+
+ plot(Time,TimeCourseMatrix[1,],type="l",col=rainbow[1],xlab="Time",ylab="Concentration",main="Concentrations Over Time")
+    lines(Time,TimeCourseMatrix[2,],col=rainbow[2])
+    lines(Time,TimeCourseMatrix[3,],col=rainbow[3])
+    lines(Time,TimeCourseMatrix[4,],col=rainbow[4])
+    lines(Time,TimeCourseMatrix[5,],col=rainbow[5])
+    lines(Time,TimeCourseMatrix[6,],col=rainbow[6])
+    legend("bottomright",legend=c("S1","S2","S3","S4","S5","S6"),col=rainbow,title="Compounds",lty=1,cex=.5)
+
+More species can be plotted as needed by adding more "lines" commands and labels to the legend. 
+    
+
+
 
 

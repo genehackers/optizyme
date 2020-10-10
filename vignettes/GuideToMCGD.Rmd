@@ -14,11 +14,23 @@ knitr::opts_chunk$set(
 )
 ```
 
+##
+
+Vignette Contents:
+
+• Description of how MCGD works <br />
+• Description of MCGD's outputs <br />
+• List/Explanation of inputs to MCGD <br />
+• Explanation of OFFunction, a function that needs to be defined in order for MCGD to optimize its output. <br />
+• Actually calling the MCGD function
+
+##
+
+## How MCGD works
+
 **MCGD** stands for **Monte Carlo Gradient Descent** and is the optimization algorithm that is the heart of Optizyme's functionality. MCGD can be used to optimize enzyme ratios for a cell-free biological system.
 
 First we will provide an explanation of how a gradient descent algorithm works. 
-
-##
 
 The simplest way to explain this algorithm is with an **analogy**. Imagine walking over a a very foggy landscape, so foggy that you cannot see past where you are standing. This landscape has a lot of hills and dips, and you are trying to find the lowest point of the landscape. The only tool available to you is a compass, but instead of telling you which way is north, this compass points in the direction of greatest decrease in altitude. So if you were standing on the side of a hill, the compass would point straight down the hill.  To move around, you look at the compass, and then you take a step in the direction it is pointing. You then look again, and take a step in the new direction it is pointing. At some point, you should reach the lowest point on the landscape. Our gradient descent algorithm uses this idea to find the most efficient ratio of enzymes. The foggy landscape in the analogy is a function of different enzyme ratios. Each place you step is a different vector of enzyme ratios, and each altitude is a turnover rate, so you're looking for the spot where the altitude is lowest / the turnover rate is fastest. 
 
@@ -26,9 +38,17 @@ Now imagine that you find yourself in a ditch. The compass would lead you to the
 
 ##
 
+## MCGD's outputs
+
 MCGD outputs a vector containing two types of information: the **optimized enzyme ratios**, and the **final concentration** of the compound of interest. The output vector is the list of optimized enzyme ratios, and the last value of the vector is the concentration of the compound of interest at then end of the model time.
 
 An example of an output vector for a system with three enzymes could look like this: <3, 6, 1, -8.3>, where 3, 6, and 1 are the optimized enzyme ratios for the system, and -8.3 is negative one times the final concentration of the compound of interest.
+
+##
+
+## Inputs
+
+The inputs to MCGD will be described below, and other information needed to call the function will be described after that.
 
 The MCGD function takes a few **arguments**: NumberOfEnzymes, TotalEnzyme, NumberOfRuns, ThresholdGuess, GDPrecision, GDNumberOfSteps, and GDdtCutoff. MCGD also requires
 
@@ -47,3 +67,98 @@ The arguments for MCGD are as follows:
 **GDNumberOfSteps** is the number of steps the algorithm will take each run it does. The more steps taken, the longer it will take the algorithm to do each run.
 
 **GDCutoff** determines what level of accuracy is desired. If the algorithm starts adjusting values below this step of accuracy, it will terminate to avoid additional computation cost. If the total enzyme is 22.6 ug/ml, and an accuracy of .226 ug/ml is desired, then the GDCutoff value should be .01, or 1%.
+
+##
+
+## OFFunction
+
+MCGD requires a function that describes the cell-free system being optimized. MCGD recognizes whatever model is named in the environment as "OFFunction". The only property of OFFunction is that it should take a vector of enzyme concentrations as input, and output -1 times the terminal concentration of the species whose yield is supposed to maximized. There are two ways to do this:
+
+1. A user can use their own simulation as the function, as long as it outputs negative one times the  terminal concentration of the species that is supposed to be optimized. Just define the simulation as a variable called "OFFunction", and then call the function as described later in this vignette.
+
+2. Another option is to use the Optizyme function EnzymeModel, which creates a model that outputs that value. Here is some code that does that:
+
+```{r}
+OFFunction<-function(EnzymeConcentrationVector){
+  EnzymeModel(6,InitialState,63.07,.01,EnzymeNumberOfSubstrates,EnzymeSubstrates,EnzymeProducts,EnzymeConcentrationVector,EnzymeTurnoverRates,EnzymeMichaelisConstants,EnzymeS1CompetitiveInhibitors,EnzymeS1CompetitiveInhibitionConstants,EnzymeS2CompetitiveInhibitors,EnzymeS2CompetitiveInhibitionConstants,EnzymeNonCompetitiveInhibitors,EnzymeNonCompetitiveInhibitionConstants,6)
+}
+```
+
+In the case of this model, the NAD+ recycling mechanism is approximated as an enzyme reaction, when this equation is really not supposed to vary with enzyme concentration. For this reason, we have to write our target function with the concentration of this "enzyme" constant, so that the optimization algorithm doesn't recognize it as something to change. To account for that, one would enter the following code:
+
+OFFunction<-function(EnzymeConcentrationVector){
+InitialState<-c(4.25,0,0,0,0,0,11.5,0,0,10,0)
+EnzymeNumberOfSubstrates<-c(2,1,1,1,2,2)
+EnzymeSubstratesFilling<-c(1,7,2,0,3,0,4,0,5,7,10,8)
+EnzymeSubstrates<-matrix(EnzymeSubstratesFilling,ncol=6)
+EnzymeProductsFilling<-c(2,8,3,0,4,0,5,0,6,8,0,11)
+EnzymeProducts<-matrix(EnzymeProductsFilling,ncol=6)
+
+
+#The last enzyme concentration is really the cofactor regeneration that is present, so we have to turn this into a function of five enzyme concentrations, because those are the only ones we want to vary. 
+EnzymeConcentrations<-rep(0,6)
+EnzymeConcentrations[1]<-EnzymeConcentrationVector[1]
+EnzymeConcentrations[2]<-EnzymeConcentrationVector[2]
+EnzymeConcentrations[3]<-EnzymeConcentrationVector[3]
+EnzymeConcentrations[4]<-EnzymeConcentrationVector[4]
+EnzymeConcentrations[5]<-EnzymeConcentrationVector[5]
+EnzymeConcentrations[6]<-1
+
+EnzymeTurnoverRates<-c(.123697,.839404,.043636,.019801,.0583,1000)
+EnzymeMichaelisConstantsFilling<-c(0.19850960840785867,0.16123927045886804,0.4452685845967363,1,0.7939547312720485,1,0.20765619156952056,1,0.021750105300746496,0.5962856010942978,10,10)
+EnzymeMichaelisConstants<-matrix(EnzymeMichaelisConstantsFilling,ncol=6,nrow=2)
+E1S1CI<-c(2,9,9,9,9,9,9,9,9,9,9)
+E2S1CI<-c(3,9,9,9,9,9,9,9,9,9,9)
+E3S1CI<-c(4,9,9,9,9,9,9,9,9,9,9)
+E4S1CI<-c(5,9,9,9,9,9,9,9,9,9,9)
+E5S1CI<-c(6,4,9,9,9,9,9,9,9,9,9)
+E6S1CI<-c(9,9,9,9,9,9,9,9,9,9,9)
+EnzymeS1CompetitiveInhibitors<-cbind(E1S1CI,E2S1CI,E3S1CI,E4S1CI,E5S1CI,E6S1CI)
+E1S1C<-c(0.5357339888880199,9,9,9,9,9,9,9,9,9)
+E2S1C<-c(0.038100367072300925,9,9,9,9,9,9,9,9,9)
+E3S1C<-c(0.8624275767674491,9,9,9,9,9,9,9,9,9)
+E4S1C<-c(0.28865820908799766,9,9,9,9,9,9,9,9,9)
+E5S1C<-c(0.27905898103297405,0.2136,9,9,9,9,9,9,9,9)
+E6S1C<-c(9,9,9,9,9,9,9,9,9,9)
+EnzymeS1CompetitiveInhibitionConstants<-cbind(E1S1C,E2S1C,E3S1C,E4S1C,E5S1C,E6S1C)
+E1S2CI<-c(8,9,9,9,9,9,9,9,9,9,9)
+E2S2CI<-c(9,9,9,9,9,9,9,9,9,9,9)
+E3S2CI<-c(9,9,9,9,9,9,9,9,9,9,9)
+E4S2CI<-c(9,9,9,9,9,9,9,9,9,9,9)
+E5S2CI<-c(8,9,9,9,9,9,9,9,9,9,9)
+E6S2CI<-c(9,9,9,9,9,9,9,9,9,9,9)
+EnzymeS2CompetitiveInhibitors<-cbind(E1S2CI,E2S2CI,E3S2CI,E4S2CI,E5S2CI,E6S2CI)
+E1S2C<-c(0.02970905659171423,9,9,9,9,9,9,9,9,9,9)
+E2S2C<-c(9,9,9,9,9,9,9,9,9,9,9)
+E3S2C<-c(9,9,9,9,9,9,9,9,9,9,9)
+E4S2C<-c(9,9,9,9,9,9,9,9,9,9,9)
+E5S2C<-c(0.2674,9,9,9,9,9,9,9,9,9,9)
+E6S2C<-c(9,9,9,9,9,9,9,9,9,9,9)
+EnzymeS2CompetitiveInhibitionConstants<-cbind(E1S2C,E2S2C,E3S2C,E4S2C,E5S2C,E6S2C)
+
+E1NCI<-c(9,9,9,9,9,9,9,9,9,9)
+E2NCI<-c(9,9,9,9,9,9,9,9,9,9)
+E3NCI<-c(8,9,9,9,9,9,9,9,9,9)
+E4NCI<-c(1,6,10,11,9,9,9,9,9,9)
+E5NCI<-c(9,9,9,9,9,9,9,9,9,9)
+E6NCI<-c(9,9,9,9,9,9,9,9,9,9)
+EnzymeNonCompetitiveInhibitors<-cbind(E1NCI,E2NCI,E3NCI,E4NCI,E5NCI,E6NCI)
+E1NC<-c(9,9,9,9,9,9,9,9,9,9)
+E2NC<-c(9,9,9,9,9,9,9,9,9,9)
+E3NC<-c(10.462860450236784,9,9,9,9,9,9,9,9,9)
+E4NC<-c(18.30014950694962,14.791937154740701,17.91684582661257,27.97615617816409,9,9,9,9,9,9)
+E5NC<-c(9,9,9,9,9,9,9,9,9,9)
+E6NC<-c(9,9,9,9,9,9,9,9,9,9)
+EnzymeNonCompetitiveInhibitionConstants<-cbind(E1NC,E2NC,E3NC,E4NC,E5NC,E6NC)
+
+EnzymeModel(6,InitialState,63.07,.01,EnzymeNumberOfSubstrates,EnzymeSubstrates,EnzymeProducts,EnzymeConcentrations,EnzymeTurnoverRates,EnzymeMichaelisConstants,EnzymeS1CompetitiveInhibitors,EnzymeS1CompetitiveInhibitionConstants,EnzymeS2CompetitiveInhibitors,EnzymeS2CompetitiveInhibitionConstants,EnzymeNonCompetitiveInhibitors,EnzymeNonCompetitiveInhibitionConstants,6)
+  
+}
+
+##
+
+## Calling MCGD
+
+Once OFFunction has been defined, MCGD can be called:
+
+MCGD(5,22.6,10,c(22.6/5,22.6/5,22.6/5,22.6/5,22.6/5),.25,10,.01)
