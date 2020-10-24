@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>GuideToModellingAndVisualizationFunctions</title>
+
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">GuideToModellingAndVisualizationFunctions</h1>
+
+
+
+<p>Vignette Contents:</p>
+<p>• List/Explanation of Modelling and Visualization functions available in Optizyme <br /> • List/Explanation of inputs to these functions<br /> • Explanation of Model System<br /> • Demonstration of how to define the inputs to the functions in a way that is easily checked for errors<br /> • Example call for each function<br /></p>
+<div id="section" class="section level2">
+<h2></h2>
+</div>
+<div id="the-functions" class="section level2">
+<h2>The Functions</h2>
+<p>The functions <strong>EnzymeModel</strong>, <strong>EnzymeModelPlot</strong>, and <strong>EnzymeModelTimeCourse</strong> all take the same inputs and differ in their outputs.</p>
+<p><strong>EnzymeModel</strong> outputs the terminal concentration of the species that is supposed to be optimized.</p>
+<p><strong>EnzymeModelPlot</strong> generates the graph for the time-course of the cell free system.</p>
+<p><strong>EnzymeModelTimeCourse</strong> outputs the time course for each species as a row in the matrix.</p>
+<p>EnzymeModel can be used as the optimization function for MCGD, and the GuideToMCGD vignette explains how to do that.</p>
+</div>
+<div id="section-1" class="section level2">
+<h2></h2>
+</div>
+<div id="inputs" class="section level2">
+<h2>Inputs</h2>
+<p>Their inputs will be described below, and then the use of each function will be detailed after.</p>
+<p><strong>NumberOfEnzymes</strong> is a scalar value that should be equal to the number of enzymes in the system.</p>
+<p><strong>InitialState</strong> is a vector containing the initial concentrations of each fo the species involved in the system. The last entry in InitialState should be a zero, and won’t represent any species in the system. This last entry being zero is used for indexing purposes by the function.</p>
+<p><strong>Time</strong> is a scalar value that represents how long the simulated time course should represent. The units for time will depend on the units of the inputs to the function. For example, if turnover rates of enzymes are expressed in inverse seconds, the units of time will be seconds.</p>
+<p><strong>dt</strong> is a scalar value that represents the time step used in the integration of the differential equations representing the enzyme time course. As dt decreases, the computational cost increases, but accuracy of the model also increases.</p>
+<p><strong>EnzymeNumberOfSubstrates</strong> is a vector of size n, where n is equal to the number of enzymes. For example, if the first enzyme is a single substrate enzyme, then the first entry in EnzymeNumberOfSubstrates should be 1. If the second enzyme in the pathway is a bisubstrate enzyme, then the second entry in EnzymeNumberOfSubstrates should be 2. It is important to note that these functions do not support more than two substrates per enzyme.</p>
+<p><strong>EnzymeSubstrates</strong> is a matrix of size 2xn, where n is equal to the number of enzymes. Its entries are which species in the InitialState vector are substrates to the nth enzyme in the pathway. For example, if the first enzyme has one substrate and it is compound 1 listed in InitialState, then the first column of the EnzymeSubstrates matrix is 1,0. There must be two entries into the matrix for each column, and if one of the slots isnt used then the value should be 0. The first entry in the column shoul d be filled first. If the second enzyme has two substrates and they are compounds 2 and 3, then the second column of EnzymeSubstrates should be 2,3.</p>
+<p><strong>EnzymeProducts</strong> is also a matrix of size 2xn, with the same structure and properties as EnzymeSubstrates. However, the entries should represent the products of the enzyme rather than the substrates.</p>
+<p><strong>EnzymeConcentrations</strong> is a vector of size n. The first entry in the vector should be the concentration of the first enzyme in the pathway. The second entry is the concentration of the second enzyme, and so on.</p>
+<p><strong>EnzymeTurnoverRates</strong> is a vector of size n. It should be filled in the same manner as EnzymeConcentrations.</p>
+<p><strong>EnzymeMichaelisConstants</strong> is a matrix of dimensions 2xn. The entries in the matrix are the corresponding Michaelis constants for the enzymatic catalysis of each of the substrates. For example, in our example for EnzymeSubstrates, we said that the first column of EnzymeSubstrates was 1,0. The corresopnding column of EnzymeMichaelisConstants should be Km,1, where Km is the Michaelis constant for the catalysis of compound 1 by enzyme 1 in this example. If a Michaelis Constant does not exist because an enzyme is single substrate, the second entry in the column should be a 1. However, any nonzero constant will work here.</p>
+<p><strong>EnzymeS1CompetitiveInhibitors</strong> is a matrix of size 10xn, where n is the number of enzymes in the system. Each column of the matrix contains the competitive inhibitors with the first substrate listed in the corresponding EnzymeSubstrates matrix. If there are unused slots, they should be filled in with the final entry of InitialState (Assuming that the final entry is the entry that doesn’t represent a species and is just zero). For example, if InitialState is a vector of size 12, then unused slots in the columns of EnzymeS1CompetitiveInhibitors should have the value 12. If compounds 5,6,7 are competitive inhibitors of compound 1 for enzyme 1, then the first column of the matrix is &lt;5,6,7,12,12,12,12,12,12,12&gt;, where 12 is the terminal entry of InitialState.</p>
+<p><strong>EnzymeS1CompetitiveInhibitionConstants</strong> is a matrix of the same dimensions as EnzymeS1CompetitiveInhibitors, and contains the corresponding competitive inhibition constants for each of the competitive inhibitors with the first substrate binding site. The competitive inhibition constants associated with unused competitive inhibitors should be arbitrary nonzero constants, it is recommended to use zero.</p>
+<p><strong>EnzymeS2CompetitiveInhibitors</strong> and <strong>EnzymeS2CompetitiveInhibitionConstants</strong> are structurally the same as their S1 counterparts, but the inputs differ based on whether the compounds are competitive inhibitors with the first substrate or the second substrate listed in the EnzymeSubstrates matrix.</p>
+<p><strong>EnzymeNonCompetitiveInhibitors</strong> and <strong>EnzymeNonCompetitiveInhibitionConstants</strong> are also matrices of size 10xn. They should be filled in the same manner as the competitive inhibition matrices.</p>
+</div>
+<div id="section-2" class="section level2">
+<h2></h2>
+</div>
+<div id="model-system" class="section level2">
+<h2>Model System</h2>
+<p>In order to best demonstrate the workflow involved in using the Modelling and Visualization capabilities of Optizyme, an example system will be used, and the inputs used for the modelling and visualization of that system will be explained.</p>
+<p>The system used in this example is the cell-free system described in the following paper: <a href="https://www.nature.com/articles/s41467-020-14830-y">A combined experimental and modelling approach for the Weimberg pathway optimisation</a></p>
+</div>
+<div id="section-3" class="section level2">
+<h2></h2>
+</div>
+<div id="code-to-define-the-inputs" class="section level2">
+<h2>Code to Define the Inputs</h2>
+<p>Here is some code that defines the inputs needed to use these functions. Note that many of the inputs are not directly entered into the function call itself. Instead, they are defined as separate variables (for example, InitialState), and the names of those variables will be entered into the function call. The function would work just as well if the vectors were entered directly into the functin call, but doing it this way helps to check for errors.</p>
+<p>Another thing to note here is that instead of turnover rate and concentration, the entries to EnzymeTurnoverRates and EnzymeConcentrations are specific activies in U/mg and then concentrations in mg/ml. Within this specific model, there are two reactions that Optizyme does not represent exactly like the model in the paper. There is a spontaneous conversion of compound 2 to compound 3 whose rate equation doesn’t follow the structure of enzyme kinetic differential equations, and so it is left out of the model. Furthermore, the NAD+ recycling mechamism described in the paper is approximated as an enzyme reaction, but is not represented perfectly.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>InitialState&lt;-<span class="kw">c</span>(<span class="fl">4.25</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="fl">11.5</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">10</span>,<span class="dv">0</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a>EnzymeNumberOfSubstrates&lt;-<span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>)</span>
+<span id="cb1-3"><a href="#cb1-3"></a>EnzymeSubstratesFilling&lt;-<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">7</span>,<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">3</span>,<span class="dv">0</span>,<span class="dv">4</span>,<span class="dv">0</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">10</span>,<span class="dv">8</span>)</span>
+<span id="cb1-4"><a href="#cb1-4"></a>EnzymeSubstrates&lt;-<span class="kw">matrix</span>(EnzymeSubstratesFilling,<span class="dt">ncol=</span><span class="dv">6</span>)</span>
+<span id="cb1-5"><a href="#cb1-5"></a>EnzymeProductsFilling&lt;-<span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">8</span>,<span class="dv">3</span>,<span class="dv">0</span>,<span class="dv">4</span>,<span class="dv">0</span>,<span class="dv">5</span>,<span class="dv">0</span>,<span class="dv">6</span>,<span class="dv">8</span>,<span class="dv">0</span>,<span class="dv">11</span>)</span>
+<span id="cb1-6"><a href="#cb1-6"></a>EnzymeProducts&lt;-<span class="kw">matrix</span>(EnzymeProductsFilling,<span class="dt">ncol=</span><span class="dv">6</span>)</span>
+<span id="cb1-7"><a href="#cb1-7"></a>EnzymeConcentrations&lt;-<span class="kw">c</span>(<span class="dv">2</span>,<span class="fl">1.5</span>,<span class="fl">5.7</span>,<span class="fl">9.8</span>,<span class="fl">3.6</span>,<span class="dv">1</span>)</span>
+<span id="cb1-8"><a href="#cb1-8"></a>EnzymeTurnoverRates&lt;-<span class="kw">c</span>(.<span class="dv">123697</span>,.<span class="dv">839404</span>,.<span class="dv">043636</span>,.<span class="dv">019801</span>,.<span class="dv">0583</span>,<span class="dv">1000</span>)</span>
+<span id="cb1-9"><a href="#cb1-9"></a>EnzymeMichaelisConstantsFilling&lt;-<span class="kw">c</span>(<span class="fl">0.19850960840785867</span>,<span class="fl">0.16123927045886804</span>,<span class="fl">0.4452685845967363</span>,<span class="dv">1</span>,<span class="fl">0.7939547312720485</span>,<span class="dv">1</span>,<span class="fl">0.20765619156952056</span>,<span class="dv">1</span>,<span class="fl">0.021750105300746496</span>,<span class="fl">0.5962856010942978</span>,<span class="dv">10</span>,<span class="dv">10</span>)</span>
+<span id="cb1-10"><a href="#cb1-10"></a>EnzymeMichaelisConstants&lt;-<span class="kw">matrix</span>(EnzymeMichaelisConstantsFilling,<span class="dt">ncol=</span><span class="dv">6</span>,<span class="dt">nrow=</span><span class="dv">2</span>)</span>
+<span id="cb1-11"><a href="#cb1-11"></a>E1S1CI&lt;-<span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-12"><a href="#cb1-12"></a>E2S1CI&lt;-<span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-13"><a href="#cb1-13"></a>E3S1CI&lt;-<span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-14"><a href="#cb1-14"></a>E4S1CI&lt;-<span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-15"><a href="#cb1-15"></a>E5S1CI&lt;-<span class="kw">c</span>(<span class="dv">6</span>,<span class="dv">4</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-16"><a href="#cb1-16"></a>E6S1CI&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-17"><a href="#cb1-17"></a>EnzymeS1CompetitiveInhibitors&lt;-<span class="kw">cbind</span>(E1S1CI,E2S1CI,E3S1CI,E4S1CI,E5S1CI,E6S1CI)</span>
+<span id="cb1-18"><a href="#cb1-18"></a>E1S1C&lt;-<span class="kw">c</span>(<span class="fl">0.5357339888880199</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-19"><a href="#cb1-19"></a>E2S1C&lt;-<span class="kw">c</span>(<span class="fl">0.038100367072300925</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-20"><a href="#cb1-20"></a>E3S1C&lt;-<span class="kw">c</span>(<span class="fl">0.8624275767674491</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-21"><a href="#cb1-21"></a>E4S1C&lt;-<span class="kw">c</span>(<span class="fl">0.28865820908799766</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-22"><a href="#cb1-22"></a>E5S1C&lt;-<span class="kw">c</span>(<span class="fl">0.27905898103297405</span>,<span class="fl">0.2136</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-23"><a href="#cb1-23"></a>E6S1C&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-24"><a href="#cb1-24"></a>EnzymeS1CompetitiveInhibitionConstants&lt;-<span class="kw">cbind</span>(E1S1C,E2S1C,E3S1C,E4S1C,E5S1C,E6S1C)</span>
+<span id="cb1-25"><a href="#cb1-25"></a>E1S2CI&lt;-<span class="kw">c</span>(<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-26"><a href="#cb1-26"></a>E2S2CI&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-27"><a href="#cb1-27"></a>E3S2CI&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-28"><a href="#cb1-28"></a>E4S2CI&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-29"><a href="#cb1-29"></a>E5S2CI&lt;-<span class="kw">c</span>(<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-30"><a href="#cb1-30"></a>E6S2CI&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-31"><a href="#cb1-31"></a>EnzymeS2CompetitiveInhibitors&lt;-<span class="kw">cbind</span>(E1S2CI,E2S2CI,E3S2CI,E4S2CI,E5S2CI,E6S2CI)</span>
+<span id="cb1-32"><a href="#cb1-32"></a>E1S2C&lt;-<span class="kw">c</span>(<span class="fl">0.02970905659171423</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-33"><a href="#cb1-33"></a>E2S2C&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-34"><a href="#cb1-34"></a>E3S2C&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-35"><a href="#cb1-35"></a>E4S2C&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-36"><a href="#cb1-36"></a>E5S2C&lt;-<span class="kw">c</span>(<span class="fl">0.2674</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-37"><a href="#cb1-37"></a>E6S2C&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-38"><a href="#cb1-38"></a>EnzymeS2CompetitiveInhibitionConstants&lt;-<span class="kw">cbind</span>(E1S2C,E2S2C,E3S2C,E4S2C,E5S2C,E6S2C)</span>
+<span id="cb1-39"><a href="#cb1-39"></a></span>
+<span id="cb1-40"><a href="#cb1-40"></a>E1NCI&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-41"><a href="#cb1-41"></a>E2NCI&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-42"><a href="#cb1-42"></a>E3NCI&lt;-<span class="kw">c</span>(<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-43"><a href="#cb1-43"></a>E4NCI&lt;-<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">6</span>,<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-44"><a href="#cb1-44"></a>E5NCI&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-45"><a href="#cb1-45"></a>E6NCI&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-46"><a href="#cb1-46"></a>EnzymeNonCompetitiveInhibitors&lt;-<span class="kw">cbind</span>(E1NCI,E2NCI,E3NCI,E4NCI,E5NCI,E6NCI)</span>
+<span id="cb1-47"><a href="#cb1-47"></a>E1NC&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-48"><a href="#cb1-48"></a>E2NC&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-49"><a href="#cb1-49"></a>E3NC&lt;-<span class="kw">c</span>(<span class="fl">10.462860450236784</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-50"><a href="#cb1-50"></a>E4NC&lt;-<span class="kw">c</span>(<span class="fl">18.30014950694962</span>,<span class="fl">14.791937154740701</span>,<span class="fl">17.91684582661257</span>,<span class="fl">27.97615617816409</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-51"><a href="#cb1-51"></a>E5NC&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-52"><a href="#cb1-52"></a>E6NC&lt;-<span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
+<span id="cb1-53"><a href="#cb1-53"></a>EnzymeNonCompetitiveInhibitionConstants&lt;-<span class="kw">cbind</span>(E1NC,E2NC,E3NC,E4NC,E5NC,E6NC)</span></code></pre></div>
+<p>##</p>
+<p>Now that the inputs have been defined, we will show examples of using these inputs to call these three functions.</p>
+<p>##</p>
+</div>
+<div id="enzymemodel" class="section level1">
+<h1>EnzymeModel</h1>
+<p>EnzymeModel outputs the terminal concentration of the species that is supposed to be optimized. It multiplies the terminal concentration because our algorithm is a minimization, so maximizing yield corresponds to minimizing yield*-1.</p>
+<p>EnzymeModel(6,InitialState,63.07,.01,EnzymeNumberOfSubstrates,EnzymeSubstrates,EnzymeProducts,EnzymeConcentrations,EnzymeTurnoverRates,EnzymeMichaelisConstants,EnzymeS1CompetitiveInhibitors,EnzymeS1CompetitiveInhibitionConstants,EnzymeS2CompetitiveInhibitors,EnzymeS2CompetitiveInhibitionConstants,EnzymeNonCompetitiveInhibitors,EnzymeNonCompetitiveInhibitionConstants,6)</p>
+<div id="section-4" class="section level2">
+<h2></h2>
+</div>
+</div>
+<div id="enzymemodelplot" class="section level1">
+<h1>EnzymeModelPlot</h1>
+<p>EnzymeModelPlot generates the graph for the time-course of the cell free system.</p>
+<p>EnzymeModelPlot(6,InitialState,63.07,.01,EnzymeNumberOfSubstrates,EnzymeSubstrates,EnzymeProducts,EnzymeConcentrations,EnzymeTurnoverRates,EnzymeMichaelisConstants,EnzymeS1CompetitiveInhibitors,EnzymeS1CompetitiveInhibitionConstants,EnzymeS2CompetitiveInhibitors,EnzymeS2CompetitiveInhibitionConstants,EnzymeNonCompetitiveInhibitors,EnzymeNonCompetitiveInhibitionConstants,6)</p>
+<div id="section-5" class="section level2">
+<h2></h2>
+</div>
+</div>
+<div id="enzymemodeltimecourse" class="section level1">
+<h1>EnzymeModelTimeCourse</h1>
+<p>EnzymeModelTimeCourse outputs the time course for each species as a row in a matrix. This function can be useful since it allows one to view the data in a different way than with EnzymeModelPlot.</p>
+<p>In order to correctly format the output of EnzymeModelPLot, the InitialState vector must be extended for n entries in each row based on the Time and dt chosen. Below is some code that does that:</p>
+<p>Time&lt;-63.07 dt&lt;-.01 NumberOfSteps&lt;-Time/dt</p>
+<p>Integers&lt;-(1:(NumberOfSteps)) Time&lt;-dt*Integers rainbow&lt;-rainbow(length(TimeCourseMatrix[,1]))</p>
+<p>Once the inputs have been defined, the function can be called:</p>
+<p>EnzymeModelTimeCourse(6,InitialState,63.07,.01,EnzymeNumberOfSubstrates,EnzymeSubstrates,EnzymeProducts,EnzymeConcentrations,EnzymeTurnoverRates,EnzymeMichaelisConstants,EnzymeS1CompetitiveInhibitors,EnzymeS1CompetitiveInhibitionConstants,EnzymeS2CompetitiveInhibitors,EnzymeS2CompetitiveInhibitionConstants,EnzymeNonCompetitiveInhibitors,EnzymeNonCompetitiveInhibitionConstants,6)</p>
+<p>If you want to plot the output of EnzymeModelTimeCourse, you can do it by defining a variable to be equal to the output of EnzymeModelTimeCourse, like so:</p>
+<p>TimeCourseMatrix&lt;-EnzymeModelTimeCourse(6,InitialState,63.07,.01,EnzymeNumberOfSubstrates,EnzymeSubstrates,EnzymeProducts,EnzymeConcentrations,EnzymeTurnoverRates,EnzymeMichaelisConstants,EnzymeS1CompetitiveInhibitors,EnzymeS1CompetitiveInhibitionConstants,EnzymeS2CompetitiveInhibitors,EnzymeS2CompetitiveInhibitionConstants,EnzymeNonCompetitiveInhibitors,EnzymeNonCompetitiveInhibitionConstants,6)</p>
+<p>plot(Time,TimeCourseMatrix[1,],type=“l”,col=rainbow[1],xlab=“Time”,ylab=“Concentration”,main=“Concentrations Over Time”) lines(Time,TimeCourseMatrix[2,],col=rainbow[2]) lines(Time,TimeCourseMatrix[3,],col=rainbow[3]) lines(Time,TimeCourseMatrix[4,],col=rainbow[4]) lines(Time,TimeCourseMatrix[5,],col=rainbow[5]) lines(Time,TimeCourseMatrix[6,],col=rainbow[6]) legend(“bottomright”,legend=c(“S1”,“S2”,“S3”,“S4”,“S5”,“S6”),col=rainbow,title=“Compounds”,lty=1,cex=.5)</p>
+<p>More species can be plotted as needed by adding more “lines” commands and labels to the legend.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
