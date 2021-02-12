@@ -13,7 +13,7 @@
 #' @param GDdtMultiple a float number
 #' @return a vector and the number of steps to get there
 
-GradientDescent<-function(NumberOfEnzymes,InitialGuess,NumberOfSteps,GDdtMultiple){
+GradientDescent<-function(NumberOfEnzymes,InitialGuess,NumberOfSteps,GDdtMultiple,GDdtCutoff){
   NumberOfSteps<-NumberOfSteps
   GDMatrixFilling<-rep(0,(NumberOfEnzymes+1)*(NumberOfSteps))
   GDMatrix<-matrix(GDMatrixFilling,nrow=NumberOfEnzymes+1)
@@ -70,6 +70,11 @@ GradientDescent<-function(NumberOfEnzymes,InitialGuess,NumberOfSteps,GDdtMultipl
       GDMatrix[1:(NumberOfEnzymes+1),Counter+1]<-GDMatrix[1:(NumberOfEnzymes+1),Counter]
     }
 
+    #The piece of code below is a kill switch when the accuracy of the algorithm becomes unnecessary.
+    if(GDdt<GDdtCutoff*MinimumStarting){
+      GDMatrix[1:(NumberOfEnzymes+1),NumberOfSteps]<-GDMatrix[1:(NumberOfEnzymes+1),Counter]
+      break
+    }
 
   }
   return(GDMatrix[1:(NumberOfEnzymes+1),NumberOfSteps])

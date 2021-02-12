@@ -10,7 +10,8 @@ MCGD(
   NumberOfRuns,
   ThresholdGuess,
   GDPrecision,
-  GDNumberOfSteps
+  GDNumberOfSteps,
+  GDdtCutoff
 )
 }
 \arguments{
@@ -30,14 +31,5 @@ MCGD(
 SolutionVector
 }
 \description{
-Function that takes the same inputs as GradientDescent
-as well as a total amount of enzyme to be used as
-the constraint in the optimization process,
-an initial guess for a starting point for gradient descent,
-and the number of starting points to use.
-The function incorporates Monte Carlo sampling of starting points,
-and only accepts starting points that have lower values
-than the value fo the initial guess value.
-A default guess for the starting point can be
-the enzymes expressed in a 1:1:1… ratio.
+This function optimizes enzyme ratios for a cell-free system.
 }

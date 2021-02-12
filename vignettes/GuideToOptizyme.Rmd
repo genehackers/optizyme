@@ -1,0 +1,38 @@
+---
+title: "Guide To Optizyme"
+author: "Michelle Awh"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{GuideToOptizyme}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+## Optizyme
+
+ <http://github.com/genehackers/optizyme>
+
+Optizyme is a software package in R that streamlines the optimization and modelling of cell-free biological systems.
+
+Optizyme is designed to be accessible for biologists without a heavy background in mathematics, computational methods in biology, or computer skills.
+
+This document will serve as a tutorial to using the capabilities of Optizyme. Below we will outline the capabilities of Optizyme and detail how to use each of the functions included in the package. 
+
+The functions included are:
+
+1. **MCGD**: Optimization of enzyme ratios
+2. **EnzymeModel**: Construction of a model for use with MCGD
+3. **EnzymeModelPlot**: Visualization of the time course for a cell-free system
+4. **EnzymeModelTimeCourse**: Ability to retrieve time course data for a more flexible visualization
+
+```{r setup}
+
+```
